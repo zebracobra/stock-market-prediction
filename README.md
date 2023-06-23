@@ -1,6 +1,7 @@
 # stock-market-prediction
 <pre>
-MCTA 3371. Group Mini Project : Stock market prediction program using Long Short Term Memory (LSTM). <br />
+MCTA 3371. <br />
+Group Mini Project : Stock market prediction program using Long Short Term Memory (LSTM). <br />
 Group members : 
 1. MUHAMMAD HAFIDZUDDIN HANIF DANIAL BIN NORIZAL (2123651)
 2. FIRDAUS RUSYDII BIN MARZUKI (2022505)
