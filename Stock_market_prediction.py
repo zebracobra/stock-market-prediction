@@ -11,12 +11,12 @@ from keras.layers import Dense, LSTM
 import matplotlib.pyplot as plt
 import mplcursors
 
-plt.style.use('fivethirtyeight')
+plt.style.use('seaborn-deep')
 
 # Main Window
 window = tk.Tk()
 window.title("Stock Price Prediction")
-window.geometry("400x250")
+window.geometry("400x300")
 
 # Function to handle button click event
 def predict_stock_price():
@@ -25,7 +25,7 @@ def predict_stock_price():
 
     # Fetch stock data for the specified company from 2016-01-01 to 2023-05-15
     stock_data = yf.download(stock_symbol, start='2016-01-01', end='2023-05-15')
-    print (stock_data)
+
     # Create a dataframe using the 'Close' column
     data = stock_data.filter(['Close'])
     # Convert to numpy array
@@ -78,6 +78,7 @@ def predict_stock_price():
 
     #evaluate the model, by getting the root mean squared error(RMSE)
     rmse = np.sqrt(np.mean(predictions - y_test) ** 2)
+    percentage_accuracy = 100 - (rmse / np.mean(y_test)) * 100
 
     # Plot the Loss vs Epoch graph
     plt.figure(figsize=(10, 6))
@@ -105,11 +106,11 @@ def predict_stock_price():
     plt.plot(valid.index, valid['Close'], color="blue")
     plt.legend(['Train', 'Predictions', 'Actual'], loc='lower right')
     plt.show()
-
+    messagebox.showinfo(f"Percentage accuracy : ", str(round(percentage_accuracy, 2)))
     # Try to predict closing price for the next 5 days after 2023-05-15
     sp_quote = yf.download(stock_symbol, start='2016-01-01', end='2023-05-15')
     new_df = sp_quote.filter(['Close'])
-    num_days = 5
+    num_days = int(days_entry.get())
     predicted_prices = []
 
     for i in range(num_days):
@@ -124,9 +125,12 @@ def predict_stock_price():
         new_df.loc[new_df.index.max() + pd.Timedelta(days=1)] = pred_price[0][0]
 
     # Display the predicted prices
-    messagebox.showinfo(f"Predicted Prices for {num_days} days after 2023-05-15", str(predicted_prices))
+    messagebox.showinfo(f"Predicted Prices for {num_days} days after 2023-05-15 ($USD)", str(predicted_prices))
 
 # Widgets
+title_label = tk.Label(window, text ="Stock Price prediction")
+title_label.pack()
+
 symbol_label = tk.Label(window, text="Stock Symbol:")
 symbol_label.pack()
 symbol_entry = tk.Entry(window)
@@ -136,6 +140,11 @@ epochs_label = tk.Label(window, text="Number of Epochs:")
 epochs_label.pack()
 epochs_entry = tk.Entry(window)
 epochs_entry.pack()
+
+days_label = tk.Label(window, text="Number of days after 2023-05-15,\nyou want to predict:")
+days_label.pack()
+days_entry = tk.Entry(window)
+days_entry.pack()
 
 predict_button = tk.Button(window, text="Predict", command=predict_stock_price)
 predict_button.pack()
